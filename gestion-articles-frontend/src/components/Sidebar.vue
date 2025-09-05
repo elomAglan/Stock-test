@@ -1,10 +1,12 @@
 <template>
   <aside class="w-64 bg-slate-900 text-gray-200 flex flex-col h-screen transition-all duration-300 ease-in-out shadow-2xl">
+    <!-- Logo / Titre -->
     <div class="p-6 text-3xl font-extrabold text-white border-b border-slate-700">
       Mon <span class="text-indigo-400">App</span>
     </div>
 
-    <nav class="flex-1 p-4">
+    <!-- Navigation -->
+    <nav class="flex-1 p-4 flex flex-col justify-between">
       <ul class="space-y-2">
         <!-- Dashboard -->
         <li class="relative group" @click="$emit('update:tab', 'dashboard')">
@@ -16,7 +18,6 @@
               class="absolute inset-y-0 left-0 w-1 bg-indigo-500 rounded-tr-md rounded-br-md transition-all duration-300 transform scale-y-0 group-hover:scale-y-100"
               :class="{'scale-y-100': activeTab === 'dashboard'}"
             ></span>
-
             <svg class="h-6 w-6 mr-3 text-gray-400 group-hover:text-indigo-400" 
                  :class="{'text-indigo-400': activeTab === 'dashboard'}" 
                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +37,6 @@
               class="absolute inset-y-0 left-0 w-1 bg-indigo-500 rounded-tr-md rounded-br-md transition-all duration-300 transform scale-y-0 group-hover:scale-y-100"
               :class="{'scale-y-100': activeTab === 'articles'}"
             ></span>
-
             <svg class="h-6 w-6 mr-3 text-gray-400 group-hover:text-indigo-400" 
                  :class="{'text-indigo-400': activeTab === 'articles'}" 
                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,9 +45,43 @@
             <span>Articles</span>
           </a>
         </li>
+
+        <!-- Categories -->
+        <li class="relative group" @click="$emit('update:tab', 'categories')">
+          <a
+            class="flex items-center px-4 py-3 rounded-md text-sm font-semibold transition-all duration-200 cursor-pointer"
+            :class="{'bg-slate-800 text-white': activeTab === 'categories'}"
+          >
+            <span 
+              class="absolute inset-y-0 left-0 w-1 bg-indigo-500 rounded-tr-md rounded-br-md transition-all duration-300 transform scale-y-0 group-hover:scale-y-100"
+              :class="{'scale-y-100': activeTab === 'categories'}"
+            ></span>
+            <svg class="h-6 w-6 mr-3 text-gray-400 group-hover:text-indigo-400" 
+                 :class="{'text-indigo-400': activeTab === 'categories'}" 
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span>Catégories</span>
+          </a>
+        </li>
       </ul>
+
+      <!-- Déconnexion tout en bas -->
+      <div class="mt-auto p-4">
+        <button
+          @click="$emit('logout')"
+          class="flex items-center px-4 py-3 w-full text-sm font-semibold text-red-500 rounded-md hover:bg-red-50 hover:text-red-600 transition-all"
+        >
+          <svg class="h-6 w-6 mr-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+          </svg>
+          <span>Déconnexion</span>
+        </button>
+      </div>
     </nav>
 
+    <!-- Version / Footer -->
     <div class="p-6 text-xs text-gray-500 border-t border-slate-700">
       <p class="mb-1">Version 1.0.0</p>
       <p>&copy; 2025 Ma société</p>
@@ -58,14 +92,11 @@
 <script>
 export default {
   props: {
-    activeTab: {
-      type: String,
-      default: 'articles'
-    }
+    activeTab: { type: String, default: 'articles' }
   }
 }
 </script>
 
 <style scoped>
-/* Plus besoin de @apply, tout est géré par les classes Tailwind dans le template */
+/* Tout est géré par Tailwind dans le template */
 </style>

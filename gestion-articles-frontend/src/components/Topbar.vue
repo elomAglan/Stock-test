@@ -8,9 +8,9 @@
 
     <!-- Section compte utilisateur -->
     <div class="flex items-center space-x-4">
-      <div class="text-gray-300">Bonjour, {{ user.name }}</div>
+      <div class="text-gray-300">Bonjour, {{ user?.name || "Utilisateur" }}</div>
       <img
-        :src="user.avatar"
+        :src="user?.avatar || 'https://i.pravatar.cc/150?img=3'"
         alt="Avatar"
         class="w-10 h-10 rounded-full border-2 border-indigo-500"
       />
