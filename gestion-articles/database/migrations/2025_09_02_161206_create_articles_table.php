@@ -14,6 +14,7 @@ class CreateArticlesTable extends Migration
             $table->text('description')->nullable(); 
             $table->integer('stock')->default(0);  // Stock
             $table->decimal('price', 10, 2)->default(0); // Prix
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();
         });
     }
