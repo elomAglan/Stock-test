@@ -1,26 +1,39 @@
 <template>
   <div>
-    <!-- Si pas connecté, afficher Login ou Register -->
-    <Login
-      v-if="!token && !showRegister"
-      @loginSuccess="onLoginSuccess"
-      @showRegister="showRegister = true"
-    />
+    <!-- ✅ Si pas connecté -->
+    <div v-if="!token">
+      <Login
+        v-if="!showRegister"
+        @loginSuccess="onLoginSuccess"
+        @showRegister="showRegister = true"
+      />
 
-    <Register
-      v-if="!token && showRegister"
-      @switch-to-login="showRegister = false"
-    />
+      <Register
+        v-else
+        @registerSuccess="onRegisterSuccess"
+        @backToLogin="showRegister = false"
+      />
+    </div>
 
-    <!-- Si connecté, afficher le layout complet -->
+    <!-- ✅ Si connecté, afficher le Dashboard -->
     <div v-else class="flex h-screen bg-gray-100">
-      <Sidebar :activeTab="activeTab" @update:tab="activeTab = $event" @logout="onLogout" />
+      <!-- Sidebar -->
+      <Sidebar
+        :activeTab="activeTab"
+        @update:tab="activeTab = $event"
+        @logout="onLogout"
+      />
+
       <div class="flex-1 flex flex-col">
-        <Topbar :user="currentUser" @logout="onLogout" />
+        <!-- Topbar -->
+        <Topbar :user="currentUser" :activeTab="activeTab" />
+
+        <!-- Contenu principal -->
         <main class="flex-1 p-6 overflow-auto">
           <Dashboard v-if="activeTab === 'dashboard'" />
           <Articles v-if="activeTab === 'articles'" />
           <Categories v-if="activeTab === 'categories'" />
+          <History v-if="activeTab === 'history'" /> <!-- Onglet Historique -->
         </main>
       </div>
     </div>
@@ -35,10 +48,21 @@ import Topbar from "./components/Topbar.vue";
 import Dashboard from "./components/Dashboard.vue";
 import Articles from "./components/Articles.vue";
 import Categories from "./components/Categories.vue";
+import History from "./components/History.vue"; // ✅ Historique
 import { getUser, logoutUser } from "./services/api.js";
 
 export default {
-  components: { Login, Register, Sidebar, Topbar, Dashboard, Articles, Categories },
+  name: "App",
+  components: {
+    Login,
+    Register,
+    Sidebar,
+    Topbar,
+    Dashboard,
+    Articles,
+    Categories,
+    History,
+  },
   data() {
     return {
       activeTab: "dashboard",
@@ -47,23 +71,31 @@ export default {
       showRegister: false,
     };
   },
-  created() {
-    if (this.token) this.fetchUser();
+  async created() {
+    if (this.token) {
+      try {
+        await this.fetchUser();
+      } catch (e) {
+        localStorage.removeItem("token");
+        this.token = null;
+      }
+    }
   },
   methods: {
     async fetchUser() {
-      try {
-        const response = await getUser();
-        this.currentUser = response.data;
-      } catch (error) {
-        console.error("Impossible de récupérer l'utilisateur :", error);
-        this.onLogout();
-      }
+      const response = await getUser();
+      this.currentUser = response.data;
     },
     onLoginSuccess(token, user) {
       localStorage.setItem("token", token);
       this.token = token;
       this.currentUser = user;
+    },
+    onRegisterSuccess(token, user) {
+      localStorage.setItem("token", token);
+      this.token = token;
+      this.currentUser = user;
+      this.showRegister = false;
     },
     async onLogout() {
       try {
@@ -78,3 +110,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Tout est géré par Tailwind dans le template */
+</style>

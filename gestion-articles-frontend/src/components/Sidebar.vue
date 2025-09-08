@@ -66,6 +66,27 @@
         </li>
       </ul>
 
+      <!-- Historique -->
+<li class="relative group" @click="$emit('update:tab', 'history')">
+  <a
+    class="flex items-center px-4 py-3 rounded-md text-sm font-semibold transition-all duration-200 cursor-pointer"
+    :class="{'bg-slate-800 text-white': activeTab === 'history'}"
+  >
+    <span 
+      class="absolute inset-y-0 left-0 w-1 bg-indigo-500 rounded-tr-md rounded-br-md transition-all duration-300 transform scale-y-0 group-hover:scale-y-100"
+      :class="{'scale-y-100': activeTab === 'history'}"
+    ></span>
+    <svg class="h-6 w-6 mr-3 text-gray-400 group-hover:text-indigo-400" 
+         :class="{'text-indigo-400': activeTab === 'history'}" 
+         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+    <span>Historique</span>
+  </a>
+</li>
+
+
       <!-- Déconnexion tout en bas -->
       <div class="mt-auto p-4">
         <button

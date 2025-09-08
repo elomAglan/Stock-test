@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -29,6 +30,13 @@ class ArticleController extends Controller
         ]);
 
         $article = Article::create($validated);
+
+        // 🔹 Audit log manuel
+        AuditLog::create([
+            'user_id' => $request->user()->id,
+            'action'  => 'Création d\'article',
+            'details' => json_encode(['article_id' => $article->id, 'name' => $article->name]),
+        ]);
 
         return response()->json($article->load('category'), 201);
     }
@@ -58,16 +66,30 @@ class ArticleController extends Controller
 
         $article->update($validated);
 
+        // 🔹 Audit log manuel
+        AuditLog::create([
+            'user_id' => $request->user()->id,
+            'action'  => 'Modification d\'article',
+            'details' => json_encode(['article_id' => $article->id, 'updated_fields' => array_keys($validated)]),
+        ]);
+
         return response()->json($article->load('category'));
     }
 
     /**
      * Supprime un article
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $article = Article::findOrFail($id);
         $article->delete();
+
+        // 🔹 Audit log manuel
+        AuditLog::create([
+            'user_id' => $request->user()->id,
+            'action'  => 'Suppression d\'article',
+            'details' => json_encode(['article_id' => $id]),
+        ]);
 
         return response()->json(['message' => 'Article supprimé avec succès']);
     }

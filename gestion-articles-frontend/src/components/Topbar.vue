@@ -1,4 +1,3 @@
-<!-- src/components/Topbar.vue -->
 <template>
   <header class="bg-slate-900 text-gray-200 flex justify-between items-center px-6 h-16 shadow-md">
     <!-- Titre dynamique -->
@@ -25,22 +24,27 @@ export default {
       type: Object,
       default: () => ({
         name: "Utilisateur",
-        avatar: "https://i.pravatar.cc/150?img=3"
-      })
+        avatar: "https://i.pravatar.cc/150?img=3",
+      }),
     },
     activeTab: {
       type: String,
-      default: "dashboard"
-    }
+      default: "dashboard",
+    },
   },
   computed: {
     tabTitle() {
-      switch(this.activeTab) {
-        case "dashboard": return "Mon Dashboard";
-        case "articles": return "Gestion des Articles";
-        default: return "Mon Dashboard";
+      switch (this.activeTab) {
+        case "dashboard":
+          return "Mon Dashboard";
+        case "articles":
+          return "Gestion des Articles";
+        case "categories":
+          return "Gestion des Catégories";
+        default:
+          return "Mon Dashboard";
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

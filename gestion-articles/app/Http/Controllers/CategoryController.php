@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\AuditLog;
 
 class CategoryController extends Controller
 {
@@ -22,6 +23,13 @@ class CategoryController extends Controller
 
         $category = Category::create([
             'name' => $request->name
+        ]);
+
+        // 🔹 Audit log manuel
+        AuditLog::create([
+            'user_id' => $request->user()->id,
+            'action'  => 'Création de catégorie',
+            'details' => json_encode(['category_id' => $category->id, 'name' => $category->name]),
         ]);
 
         return response()->json($category, 201);
@@ -44,13 +52,28 @@ class CategoryController extends Controller
             'name' => $request->name
         ]);
 
+        // 🔹 Audit log manuel
+        AuditLog::create([
+            'user_id' => $request->user()->id,
+            'action'  => 'Modification de catégorie',
+            'details' => json_encode(['category_id' => $category->id, 'updated_name' => $category->name]),
+        ]);
+
         return response()->json($category);
     }
 
     // Supprime une catégorie
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
+        $categoryId = $category->id;
         $category->delete();
+
+        // 🔹 Audit log manuel
+        AuditLog::create([
+            'user_id' => $request->user()->id,
+            'action'  => 'Suppression de catégorie',
+            'details' => json_encode(['category_id' => $categoryId]),
+        ]);
 
         return response()->json(['message' => 'Catégorie supprimée']);
     }
