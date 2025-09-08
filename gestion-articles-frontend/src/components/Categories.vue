@@ -77,43 +77,44 @@
       </div>
 
       <div v-else class="overflow-hidden border border-gray-200 rounded-lg shadow-sm">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th scope="col" class="p-4 w-10">
-                <input type="checkbox" @change="selectAll" :checked="selectedCategories.length === categories.length && categories.length > 0" class="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nom
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="category in categories" :key="category.id" :class="{'bg-indigo-50': isSelected(category.id)}">
-              <td class="p-4 whitespace-nowrap">
-                <input
-                  type="checkbox"
-                  :value="category.id"
-                  v-model="selectedCategories"
-                  class="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                />
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {{ category.id }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ category.name }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="overflow-y-auto max-h-[60vh] relative">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50 sticky top-0 z-10">
+              <tr>
+                <th scope="col" class="p-4 w-10">
+                  <input type="checkbox" @change="selectAll" :checked="selectedCategories.length === categories.length && categories.length > 0" class="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Nom
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="category in categories" :key="category.id" :class="{'bg-indigo-50': isSelected(category.id)}">
+                <td class="p-4 whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    :value="category.id"
+                    v-model="selectedCategories"
+                    class="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                  />
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {{ category.id }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ category.name }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Modal création / édition -->
     <transition name="modal-fade">
       <div v-if="showModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center">
         <div class="relative p-8 bg-white w-full max-w-lg m-4 rounded-lg shadow-2xl">

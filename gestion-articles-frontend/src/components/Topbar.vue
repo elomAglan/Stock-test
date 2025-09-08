@@ -19,13 +19,11 @@
 
 <script>
 export default {
+  name: "Topbar",
   props: {
     user: {
       type: Object,
-      default: () => ({
-        name: "Utilisateur",
-        avatar: "https://i.pravatar.cc/150?img=3",
-      }),
+      default: () => ({ name: "Utilisateur", avatar: null }),
     },
     activeTab: {
       type: String,
@@ -41,8 +39,10 @@ export default {
           return "Gestion des Articles";
         case "categories":
           return "Gestion des Catégories";
+        case "history":
+          return "Historique des actions";
         default:
-          return "Mon Dashboard";
+          return "Mon Application";
       }
     },
   },

@@ -2,8 +2,8 @@
   <div class="min-h-screen bg-gray-50 p-6">
     <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-8">
 
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-extrabold text-gray-900 flex items-center">
+      <div class="flex flex-col sm:flex-row items-center justify-between mb-8">
+        <h1 class="text-3xl font-extrabold text-gray-900 flex items-center mb-4 sm:mb-0">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10m0 0v10m0-10L7 17m10-10l-10 10m-3-10h14a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2z" />
           </svg>
@@ -76,63 +76,38 @@
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div v-else-if="paginatedArticles.length === 0" class="text-center py-12 text-gray-500">
+      <div v-else-if="filteredArticles.length === 0" class="text-center py-12 text-gray-500">
         <p class="text-lg">Aucun article trouvé.</p>
       </div>
       <div v-else class="overflow-hidden border border-gray-200 rounded-lg shadow-sm">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th scope="col" class="p-4 w-10">
-                <input type="checkbox" @change="selectAll" :checked="isAllSelected" class="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
-              </th>
-              <th @click="sortBy('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Nom</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-              <th @click="sortBy('category')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Catégorie</th>
-              <th @click="sortBy('price')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Prix</th>
-              <th @click="sortBy('stock')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Stock</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="article in paginatedArticles" :key="article.id" :class="{'bg-indigo-50': isSelected(article.id)}">
-              <td class="p-4 whitespace-nowrap">
-                <input type="checkbox" :checked="isSelected(article.id)" @change="toggleSelect(article.id)" class="h-4 w-4 text-indigo-600 border-gray-300 rounded"/>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ article.name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.description }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.category?.name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.price }} €</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.stock }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div v-if="totalPages > 1" class="flex justify-center items-center mt-6 space-x-2">
-        <button
-          @click="currentPage--"
-          :disabled="currentPage === 1"
-          class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Précédent
-        </button>
-        <div class="flex space-x-2">
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            @click="currentPage = page"
-            :class="['px-4 py-2 rounded-lg transition', currentPage === page ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-700 border hover:bg-gray-200']"
-          >
-            {{ page }}
-          </button>
+        <div class="overflow-y-auto max-h-[60vh] relative">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50 sticky top-0 z-10">
+              <tr>
+                <th scope="col" class="p-4 w-10">
+                  <input type="checkbox" @change="selectAll" :checked="isAllSelected" class="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                </th>
+                <th @click="sortBy('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Nom</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                <th @click="sortBy('category')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Catégorie</th>
+                <th @click="sortBy('price')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Prix</th>
+                <th @click="sortBy('stock')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">Stock</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="article in filteredArticles" :key="article.id" :class="{'bg-indigo-50': isSelected(article.id)}">
+                <td class="p-4 whitespace-nowrap">
+                  <input type="checkbox" :checked="isSelected(article.id)" @change="toggleSelect(article.id)" class="h-4 w-4 text-indigo-600 border-gray-300 rounded"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ article.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.description }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.category?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.price }} €</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ article.stock }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <button
-          @click="currentPage++"
-          :disabled="currentPage === totalPages"
-          class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Suivant
-        </button>
       </div>
 
       <transition name="modal-fade">
@@ -191,8 +166,6 @@ const showModal = ref(false);
 const isEditing = ref(false);
 const loading = ref(false);
 const searchQuery = ref('');
-const currentPage = ref(1);
-const itemsPerPage = ref(10);
 
 const successMessage = ref(null);
 const errorMessage = ref(null);
@@ -200,19 +173,14 @@ const errorMessage = ref(null);
 // --- Computed ---
 const filteredArticles = computed(() => {
   let filtered = articles.value.filter(a =>
-    a.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    (a.description && a.description.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-    (a.category?.name && a.category.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    (a.name || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    (a.description || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    (a.category?.name || '').toLowerCase().includes(searchQuery.value.toLowerCase())
   );
   return filtered;
 });
 
-const totalPages = computed(() => Math.ceil(filteredArticles.value.length / itemsPerPage.value));
-const paginatedArticles = computed(() => {
-  const start = (currentPage.value -1)*itemsPerPage.value;
-  return filteredArticles.value.slice(start, start + itemsPerPage.value);
-});
-const isAllSelected = computed(() => paginatedArticles.value.length > 0 && selectedArticles.value.length === paginatedArticles.value.length);
+const isAllSelected = computed(() => filteredArticles.value.length > 0 && selectedArticles.value.length === filteredArticles.value.length);
 
 // --- Methods ---
 const showFeedback = (message, type = 'success') => {
@@ -305,7 +273,7 @@ const selectAll = () => {
   if (isAllSelected.value) {
     selectedArticles.value = [];
   } else {
-    selectedArticles.value = paginatedArticles.value.map(a=>a.id);
+    selectedArticles.value = filteredArticles.value.map(a=>a.id);
   }
 };
 const isSelected = id => selectedArticles.value.includes(id);
@@ -324,7 +292,6 @@ const sortBy = key => {
 };
 
 onMounted(() => { loadArticles(); loadCategories(); });
-watch(searchQuery, () => currentPage.value = 1);
 </script>
 
 <style>
